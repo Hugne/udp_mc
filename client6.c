@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
 	char *dest = NULL;
 	char *mc_addr = NULL;
 	char *port = NULL;
-
-	while ((c = getopt (argc, argv, "d:e:m:p:")) != -1)
+	int buflen = BUFLEN;
+	while ((c = getopt (argc, argv, "d:e:m:p:b:")) != -1)
 	{
 		switch (c) {
 		case 'd':
@@ -76,6 +76,9 @@ int main(int argc, char *argv[])
 		break;
 		case 'p':
 			port = optarg;
+		break;
+		case 'b':
+			buflen=atoi(optarg);
 		break;
 		}
 	}
@@ -130,9 +133,9 @@ int main(int argc, char *argv[])
         double count = 0;
 	while(1) {
 		printf("Sending packet: %lf\n", count);
-		snprintf(message, DATASZ, "%s:%lf:%s ", hostname, count, data);
+		snprintf(message, buflen, "%s:%lf:%s ", hostname, count, data);
 
-		if(sendto(s, message, DATASZ, 0, (struct sockaddr*) &si_other, slen) == -1)
+		if(sendto(s, message, buflen, 0, (struct sockaddr*) &si_other, slen) == -1)
 			diep("sendto");
 
 		usleep(100000);
